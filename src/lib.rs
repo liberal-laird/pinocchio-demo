@@ -31,7 +31,7 @@ pub use instructions::*;
 // 声明程序的唯一标识符
 // 这个 ID 用于在 Solana 区块链上唯一标识这个程序
 // 在部署程序之前需要生成一个新的 ID
-declare_id!("9xFC9bzvnuP486oHTiW6bfSm8zuJMachLdG6dXFcvctG");
+declare_id!("GMYuTSUDK5psTjN45KTCWrMNfSdDbRHdnY1zzpgVDYgG");
 
 /// 程序的主要指令处理函数
 ///
