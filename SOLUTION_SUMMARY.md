@@ -165,3 +165,79 @@ const depositInstruction = createDepositInstruction(
 - ✅ 验证了程序的核心功能
 
 程序现在具备了基本的存款功能，为后续的功能完善和优化提供了坚实的基础。
+
+对于客户端，我们将使用@solana/kit。
+
+即使我们将它作为测试运行，该代码也与你将在与我们的程序交互的前端中使用的代码类似。
+
+在我们的测试中，我们将：
+
+将 SOL 空投到生成的密钥对
+派生与程序相同的 PDA
+使用 Codama 生成的指令库构建交易
+将交易发送到本地验证器
+从我们项目的根目录中，创建一个客户端文件夹来存放我们的测试代码。
+
+mkdir client
+cd client
+touch tests.ts
+
+在我们开始编写我们的客户端代码之前，我们需要使用Shank创建我们程序的 IDL，并使用Codama生成一个客户端库，我们可以在我们的客户端代码中使用它。
+
+使用 Shank 生成 IDL
+你针对你的程序 crate 运行 Shank CLI，将其指向一个输出路径，并检查指令及其帐户是否与运行时期望的匹配。
+
+如果你稍后更改你的指令布局，你需要重新生成 IDL，以便你的客户端保持同步。
+
+在我们项目的根目录中，运行以下命令：
+
+cargo install shank-cli
+shank idl -o idl
+
+-o参数用于 IDL 文件将生成的输出路径。在我们的例子中，我们只是将其添加到我们项目根目录中的一个 IDL 文件夹中。
+
+我们项目中的idl文件夹现在包含pinocchio_vault.json，这是我们程序的 IDL。手动检查 IDL 是否按你预期的创建是一个好主意。
+
+使用 Codama 生成客户端库
+Codama 采用 Shank IDL 并发出一个 TypeScript 客户端。
+
+生成的代码包括指令构建器、帐户类型和小的便利措施，使你的客户端代码专注于组成交易。
+
+在我们项目的根目录中安装并初始化 Codama，接受默认值，并指向我们的idl/pinocchio_vault.json文件：
+
+npm init
+npm install codama
+npx codama init
+npx codama run js
+
+你将在我们的项目中看到一个clients/js/src/generated/文件夹，其中包含我们的客户端代码用于将交易发送到我们的程序的程序类型。
+
+创建测试脚本
+首先，我们将添加我们的客户端代码将使用的所有包：
+
+cd client
+npm i @solana-program/system @solana/kit tsx typescript @types/node ws
+
+将一个测试脚本添加到我们的package.json，它应该看起来像这样：
+
+{
+  "name": "client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "npx tsx ./tests.ts"
+  },
+  "dependencies": {
+    "@solana-program/system": "^0.1.0",
+    "@solana/kit": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "typescript": "^5.9.3",
+    "tsx": "^4.19.2"
+  }
+}
+
+现在我们可以将以下代码添加到我们的测试脚本中，以从程序中Deposit和Withdraw：
