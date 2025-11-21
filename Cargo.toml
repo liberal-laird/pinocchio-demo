@@ -9,3 +9,7 @@ pinocchio-log = "0.5.1"
 pinocchio-pubkey = "0.3.0"
 pinocchio-system = "0.4.0"
 shank = "0.4.5"
+
+
+[lib]
+crate-type = ["lib", "cdylib"]
